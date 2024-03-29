@@ -1,29 +1,36 @@
+//Golang#14 240329 arallenw lluosoglinellarnod regexp Split ReplaceAllLiteralString paramedr
 package main
 import (
 //"github.com/ianlow27/translangopenweb/pkg1"
 //"io/ioutil"
 //"net/http"
+"regexp" //240329g-include regexp
 "os"
 "bufio"
 "fmt"
 "strings"
 )
-func main(){
-  strvocab := 
-`field|maes{f}
-flower|blodeuyn{m}
-fence|clawdd{m}`
 var pr = fmt.Println
+var splt = strings.Split       //240329c - splt for brevity: 'alias'
+var mtch = regexp.MatchString  //240329e - mtch for brevity
+var rgxc = regexp.Compile      //240329h - rgxc for brevity
+func main(){
+  //!! Vocabulary Annotation Rules:
+  //!! 1) All abbreviations must be followed by a dot
+  //!! 2) The abbreviations are as follows: n-noun; f-feminine; m-masculine; adj-adjective; prp-preposition; 2m-2nd mutation;
+  strvocab := 
+`field_n.s.|maes_n.f.s.
+flower_n.s.|blodeuyn_n.m.s.
+full_adj.|llawn_adj.
+of_prp.|o_prp.2m.
+fence_n.s.|clawdd_n.m.s.`           //240329a-changed {f} to _nfs: 'multiline string'
   arr1 := strings.Split(strvocab, "\n");
   gvocab := map[string]string {}
   for _, value := range arr1 {
-    //pr(value)
-    lstr1 := strings.Split(value, "|");
-    //for _, value2 := range lstr1 {
-      //pr(value2)
-      gvocab[strings.TrimSpace(lstr1[0])] = strings.TrimSpace(lstr1[1])
-      pr(lstr1[0] + "__" + gvocab[lstr1[0]])
-    //}
+    lstr1 := strings.Split(value, "|")
+    lstr1a := strings.Split(lstr1[0], "_") //240329b-remove right of _: 'Regexp'
+    gvocab[strings.TrimSpace(lstr1a[0])] = strings.TrimSpace(lstr1[1])
+    pr(lstr1[0] + "__" + gvocab[lstr1a[0]])
   }
   reader := bufio.NewReader(os.Stdin)
   pr("Please enter some text:")
@@ -31,8 +38,16 @@ var pr = fmt.Println
   //pr(text)
   arr2 := strings.Split(strings.TrimSpace(text), " ");
   text = ""
-  for _, value := range arr2 {
-    text +=  " " + gvocab[value]
+  prevlstr1_1 := ""
+  for _, value := range arr2 { 
+    lstr1 := splt(gvocab[value], "_")   //240329f-added splt: 'Split'
+    bmtch, _ := mtch("2m.",prevlstr1_1);
+    if(bmtch){ 
+      text +=  " " + Rpl(lstr1[0], "^b", "f") //240329j-splt for brevity: 'ReplaceAllLiteralString'
+    }else {
+      text +=  " " + lstr1[0] //240329d-splt for brevity
+    }
+    prevlstr1_1 = lstr1[1]
   }
   pr("Welsh>" + text)
   /*
@@ -60,3 +75,7 @@ var pr = fmt.Println
   */
   //-------------------------------
 }
+func Rpl(pstr1 string, pstr2 string, pstr3 string)string { //240329i-unable to use alias: 'Parametres'
+  var rgx1, _ = regexp.Compile(pstr2);
+  return rgx1.ReplaceAllLiteralString(pstr1, pstr3)
+} 
