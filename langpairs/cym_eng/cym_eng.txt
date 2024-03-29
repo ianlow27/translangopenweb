@@ -1,0 +1,5 @@
+field_n.s.|maes_n.f.s.
+flower_n.s.|blodeuyn_n.m.s.
+full_adj.|llawn_adj.
+of_prp.|o_prp.2m.
+fence_n.s.|clawdd_n.m.s.

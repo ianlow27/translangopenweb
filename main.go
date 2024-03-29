@@ -1,8 +1,10 @@
-//Golang#14 240329 arallenw lluosoglinellarnod regexp Split ReplaceAllLiteralString paramedr
+//Golang #15 Adnoddau Cymorth ReadFile len darllen ffeil 240329k 
+//Golang #14 arallenw lluosoglinellarnod regexp Split ReplaceAllLiteralString paramedr 240329a 
+//------------------------------------------------------------------------
 package main
 import (
 //"github.com/ianlow27/translangopenweb/pkg1"
-//"io/ioutil"
+"io/ioutil"
 //"net/http"
 "regexp" //240329g-include regexp
 "os"
@@ -18,16 +20,26 @@ func main(){
   //!! Vocabulary Annotation Rules:
   //!! 1) All abbreviations must be followed by a dot
   //!! 2) The abbreviations are as follows: n-noun; f-feminine; m-masculine; adj-adjective; prp-preposition; 2m-2nd mutation;
+  //!! 3) Data for language translation pairs are held in subdirectories under the 'langpairs' directory. The English and Welsh bi-directional data directory is 'cym_eng' not 'eng_cym' simply because 'c' precedes 'e' in the alphabet.  (243Tk) 
+
+  strvocab :=  ""
+  file1, err := ioutil.ReadFile("./langpairs/cym_eng/cym_eng.txt") //240329k ReadFile
+  if(err == nil){
+    strvocab =  string(file1)
+  }
+/* 243Tl
   strvocab := 
 `field_n.s.|maes_n.f.s.
 flower_n.s.|blodeuyn_n.m.s.
 full_adj.|llawn_adj.
 of_prp.|o_prp.2m.
-fence_n.s.|clawdd_n.m.s.`           //240329a-changed {f} to _nfs: 'multiline string'
+fence_n.s.|clawdd_n.m.s.`           
+*/ //240329l - moved data to cym_eng.txt ; 240329a-changed {f} to _nfs: 'multiline string'
   arr1 := strings.Split(strvocab, "\n");
   gvocab := map[string]string {}
   for _, value := range arr1 {
     lstr1 := strings.Split(value, "|")
+    if(len(lstr1) <= 1){ continue }//240329m len() and continue
     lstr1a := strings.Split(lstr1[0], "_") //240329b-remove right of _: 'Regexp'
     gvocab[strings.TrimSpace(lstr1a[0])] = strings.TrimSpace(lstr1[1])
     pr(lstr1[0] + "__" + gvocab[lstr1a[0]])
